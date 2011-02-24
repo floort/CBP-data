@@ -21,7 +21,7 @@ for f in glob.glob("/home/floort/devel/pim/data/*.json"):
 		for mid in c["meldingen"].keys():
 			m = c["meldingen"][mid]
 			melding = Melding()
-			melding.id = mid
+			melding.cbpid = mid
 			melding.description = m["description"]
 			if m["doorgifte_passend"] == "J":
 				melding.doorgifte_passend = "Y"
@@ -33,33 +33,37 @@ for f in glob.glob("/home/floort/devel/pim/data/*.json"):
 			melding.doorgifte_buiten_eu = m["doorgifte_buiten_eu"]
 			melding.naam = m["naam_verwerking"]
 			melding.save()
-			for betr in m["betrokkenen"].keys():
-				b = Betrokkene()
-				b.naam = betr
-				b.melding = melding
-				b.save()
-				for detail in m["betrokkenen"][betr].keys():
-					bd = BetrokkeneDetails()
-					bd.naam = detail
-					bd.omschrijving =  m["betrokkenen"][betr][detail]
-					bd.betrokkene = b
-					bd.save()
-				b.save()
-			for ontv in m["ontvangers"]:
-				o = Ontvanger(naam=ontv)
-				o.melding = melding
-				o.save()
-			for verant in m["verantwoordelijken"]:
-				v = Verantwoordelijke()
-				v.naam = verant["Naam"]
-				v.bezoekadres = verant["Bezoekadres"]
-				v.melding = melding
-				v.save()
-			for doel in m["doelen"]:
-				d = Doel(naam=doel)
-				d.melding = melding
-				d.save()
-			melding.save()
+			if m.has_key("betrokkenen"):
+				for betr in m["betrokkenen"].keys():
+					b = Betrokkene()
+					b.naam = betr
+					b.melding = melding
+					b.save()
+					for detail in m["betrokkenen"][betr].keys():
+						bd = BetrokkeneDetails()
+						bd.naam = detail
+						bd.omschrijving =  m["betrokkenen"][betr][detail]
+						bd.betrokkene = b
+						bd.save()
+					b.save()
+			if m.has_key("ontvangers"):
+				for ontv in m["ontvangers"]:
+					o = Ontvanger(naam=ontv)
+					o.melding = melding
+					o.save()
+			if m.has_key("verantwoordelijken"):
+				for verant in m["verantwoordelijken"]:
+					v = Verantwoordelijke()
+					v.naam = verant["Naam"]
+					v.bezoekadres = verant["Bezoekadres"]
+					v.melding = melding
+					v.save()
+			if m.has_key("doelen"):
+				for doel in m["doelen"]:
+					d = Doel(naam=doel)
+					d.melding = melding
+					d.save()
+			#melding.save()
 			comp.meldingen.add(melding)
 		comp.save()
 
