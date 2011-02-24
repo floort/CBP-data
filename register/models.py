@@ -14,7 +14,7 @@ class Company(models.Model):
 	link.allow_tags=True
 
 class Melding(models.Model):
-	id = models.IntegerField(primary_key=True)
+	cbpid = models.IntegerField()
 	description = models.CharField(max_length=127)
 	doorgifte_passend = models.CharField(max_length=8, choices=(
 		("Y","Ja"),
