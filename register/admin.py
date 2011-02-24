@@ -21,6 +21,11 @@ class BetrokkeneInline(admin.TabularInline):
 	extra = 1
 	fields = ["naam"]
 
+class VerantwoordelijkeInline(admin.TabularInline):
+	model = Verantwoordelijke
+	extra = 1
+	fields = ["naam", "bezoekadres"]
+
 class BetrokkeneDetailsInline(admin.TabularInline):
 	model = BetrokkeneDetails
 	extra = 1
@@ -33,6 +38,7 @@ class CompanyAdmin(admin.ModelAdmin):
 			"fields": ("name", "url")
 		}),
 	)
+	search_fields = ("name", "meldingen__naam", "meldingen__description")
 	inlines = [MeldingInline]
 
 admin.site.register(Company, CompanyAdmin)
@@ -40,7 +46,13 @@ admin.site.register(Company, CompanyAdmin)
 class MeldingAdmin(admin.ModelAdmin):
 	list_display = ("naam", "description", "doorgifte_passend", "doorgifte_buiten_eu")
 	list_filter = ("doorgifte_passend", "doorgifte_buiten_eu")
-	inlines = [BetrokkeneInline, DoelInline, OntvangerInline]
+	search_fields = ("naam", "description", "id")
+	inlines = [
+		BetrokkeneInline, 
+		DoelInline, 
+		OntvangerInline,
+		VerantwoordelijkeInline,
+	]
 admin.site.register(Melding, MeldingAdmin)
 
 class BetrokkeneAdmin(admin.ModelAdmin):
