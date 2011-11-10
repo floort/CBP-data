@@ -44,7 +44,7 @@ class CompanyAdmin(admin.ModelAdmin):
 admin.site.register(Company, CompanyAdmin)
 
 class MeldingAdmin(admin.ModelAdmin):
-	list_display = ("naam", "description", "doorgifte_passend", "doorgifte_buiten_eu")
+	list_display = ("cbpid", "naam", "description", "doorgifte_passend", "doorgifte_buiten_eu", "link")
 	list_filter = ("doorgifte_passend", "doorgifte_buiten_eu")
 	search_fields = ("naam", "description", "id")
 	inlines = [
@@ -56,7 +56,7 @@ class MeldingAdmin(admin.ModelAdmin):
 admin.site.register(Melding, MeldingAdmin)
 
 class BetrokkeneAdmin(admin.ModelAdmin):
-	list_display = ("naam",)
+	list_display = ("melding", "naam")
 	search_fields = ("naam",)
 	inlines = [BetrokkeneDetailsInline,]
 

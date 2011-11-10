@@ -14,19 +14,23 @@ class Company(models.Model):
 	link.allow_tags=True
 
 class Melding(models.Model):
-	cbpid = models.IntegerField()
-	description = models.CharField(max_length=127)
-	doorgifte_passend = models.CharField(max_length=8, choices=(
-		("Y","Ja"),
-		("N","Nee"),
-		("?","Onbekend")))
-	url = models.URLField()
-	doorgifte_buiten_eu = models.BooleanField()
-	naam = models.CharField(max_length=127)
-	
-	def __unicode__(self):
-		return self.naam
-	
+    cbpid = models.IntegerField()
+    description = models.CharField(max_length=127)
+    doorgifte_passend = models.CharField(max_length=8, choices=(
+        ("Y","Ja"),
+        ("N","Nee"),
+        ("?","Onbekend")))
+    url = models.URLField()
+    doorgifte_buiten_eu = models.BooleanField()
+    naam = models.CharField(max_length=127)
+    
+    def __unicode__(self):
+        return self.naam
+    
+    def link(self):
+        return u'<a href=%s>link</a>' % (self.url)
+    link.allow_tags = True
+
 
 class Betrokkene(models.Model):
 	melding = models.ForeignKey(Melding)
