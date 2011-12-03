@@ -2,9 +2,10 @@ from register.models import *
 from django.contrib import admin
 
 class MeldingInline(admin.TabularInline):
-	model = Company.meldingen.through
-	extra = 1
-	#fields = ["url"]
+    model = Melding
+    extra = 1
+    list_filter = ['tags',]
+    #fields = ["url"]
 
 class DoelInline(admin.TabularInline):
 	model = Doel
@@ -32,20 +33,21 @@ class BetrokkeneDetailsInline(admin.TabularInline):
 	fields = ["naam", "omschrijving"]
 
 class CompanyAdmin(admin.ModelAdmin):
-	list_display = ("name", "link")
-	fieldsets = (
-		(None, {
-			"fields": ("name", "url")
-		}),
-	)
-	search_fields = ("name", "meldingen__naam", "meldingen__description")
-	inlines = [MeldingInline]
+    list_display = ("name", "link")
+    list_filter = ['tags',]
+    fieldsets = (
+        (None, {
+            "fields": ("name", "url", "tags")
+        }),
+    )
+    search_fields = ("name", "melding__naam", "melding__description")
+    inlines = [MeldingInline]
 
 admin.site.register(Company, CompanyAdmin)
 
 class MeldingAdmin(admin.ModelAdmin):
-	list_display = ("cbpid", "naam", "description", "doorgifte_passend", "doorgifte_buiten_eu", "link")
-	list_filter = ("doorgifte_passend", "doorgifte_buiten_eu")
+	list_display = ("cbpid", "naam", "description", "company", "doorgifte_passend", "doorgifte_buiten_eu", "link")
+	list_filter = ("doorgifte_passend", "doorgifte_buiten_eu", "tags")
 	search_fields = ("naam", "description", "id")
 	inlines = [
 		BetrokkeneInline, 

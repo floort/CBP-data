@@ -22,6 +22,7 @@ for f in glob.glob("/home/floort/devel/pim/data/*.json"):
 			m = c["meldingen"][mid]
 			melding = Melding()
 			melding.cbpid = mid
+			melding.company = comp
 			melding.description = m["description"]
 			if m["doorgifte_passend"] == "J":
 				melding.doorgifte_passend = "Y"
@@ -64,7 +65,7 @@ for f in glob.glob("/home/floort/devel/pim/data/*.json"):
 					d.melding = melding
 					d.save()
 			#melding.save()
-			comp.meldingen.add(melding)
+			#comp.meldingen.add(melding)
 		comp.save()
 
 			
