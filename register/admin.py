@@ -1,10 +1,10 @@
+from copy import copy
 from register.models import *
 from django.contrib import admin
 
 class MeldingInline(admin.TabularInline):
     model = Melding
     extra = 1
-    list_filter = ['tags',]
     #fields = ["url"]
 
 class DoelInline(admin.TabularInline):
@@ -33,21 +33,43 @@ class BetrokkeneDetailsInline(admin.TabularInline):
 	fields = ["naam", "omschrijving"]
 
 class CompanyAdmin(admin.ModelAdmin):
-    list_display = ("name", "link")
-    list_filter = ['tags',]
+    list_display = ("name", "tags_str", "link")
+    list_filter = ['tags', ]
     fieldsets = (
         (None, {
             "fields": ("name", "url", "tags")
         }),
     )
-    search_fields = ("name", "melding__naam", "melding__description")
+    search_fields = ("name", "melding__naam", "melding__description", )
     inlines = [MeldingInline]
+
+    def get_actions(self, request):
+        actions = super(CompanyAdmin, self).get_actions(request)
+        for tag in Tag.objects.all():
+            tag = unicode(tag.name)
+            def a(modeladmin, request, queryset, tag=tag):
+                for company in queryset:
+                    tag = Tag.objects.get(name=tag)
+                    company.tags.add(tag)
+                    company.save()
+            actions["add_tag_%s" % (tag)] = (
+                copy(a), "add_tag_%s" % (tag), "Add tag %s" % (tag))
+            def d(modeladmin, request, queryset, tag=tag):
+                for company in queryset:
+                    tag = Tag.objects.get(name=tag)
+                    company.tags.remove(tag)
+                    company.save()
+            actions["del_tag_%s" % (tag)] = (
+                copy(d), "del_tag_%s" % (tag), "Remove tag %s" % (tag))
+        return actions
+
 
 admin.site.register(Company, CompanyAdmin)
 
 class MeldingAdmin(admin.ModelAdmin):
-	list_display = ("cbpid", "naam", "description", "company", "doorgifte_passend", "doorgifte_buiten_eu", "link")
-	list_filter = ("doorgifte_passend", "doorgifte_buiten_eu", "tags")
+	list_display = ("cbpid", "naam", "description", "company",
+        "doorgifte_passend", "doorgifte_buiten_eu", "link")
+	list_filter = ("doorgifte_passend", "doorgifte_buiten_eu")
 	search_fields = ("naam", "description", "id")
 	inlines = [
 		BetrokkeneInline, 
@@ -69,5 +91,5 @@ class BetrokkeneDetailsAdmin(admin.ModelAdmin):
 
 admin.site.register(BetrokkeneDetails, BetrokkeneDetailsAdmin)
 
-
+admin.site.register(Tag)
 

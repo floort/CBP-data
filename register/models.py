@@ -2,7 +2,7 @@ from django.db import models
 
 
 class Tag(models.Model):
-    name = models.CharField(max_length=64)
+    name = models.CharField(max_length=63)
 
     def __unicode__(self):
         return self.name
@@ -11,7 +11,7 @@ class Tag(models.Model):
 class Company(models.Model):
     url = models.URLField(unique=True)
     name = models.CharField(max_length=255)
-    tags = models.ManyToManyField(Tag)
+    tags = models.ManyToManyField(Tag, blank=True)
 
     def __unicode__(self):
         return self.name
@@ -19,6 +19,10 @@ class Company(models.Model):
         return "<a href=\"%s\">Link</a>" % (self.url)
     name.allow_tags=True
     link.allow_tags=True
+
+    def tags_str(self):
+        if not self.tags: return ""
+        return ", ".join([t.__unicode__() for t in self.tags.iterator()])
 
 class Melding(models.Model):
     cbpid = models.IntegerField()
@@ -31,8 +35,7 @@ class Melding(models.Model):
     url = models.URLField()
     doorgifte_buiten_eu = models.BooleanField()
     naam = models.CharField(max_length=255)
-    tags = models.ManyToManyField(Tag)
-
+    tags = models.ManyToManyField(Tag, blank=True)
 
     def __unicode__(self):
         return self.naam
@@ -40,7 +43,6 @@ class Melding(models.Model):
     def link(self):
         return u'<a href=%s>link</a>' % (self.url)
     link.allow_tags = True
-
 
 class Betrokkene(models.Model):
 	melding = models.ForeignKey(Melding)
@@ -78,7 +80,6 @@ class Doel(models.Model):
 	
 	def __unicode__(self):
 		return self.naam
-
 
 
 
