@@ -23,6 +23,8 @@ class Company(models.Model):
     def tags_str(self):
         if not self.tags: return ""
         return ", ".join([t.__unicode__() for t in self.tags.iterator()])
+Company.verbose_name = "Bedrijf"
+Company.verbose_name_plural = "Bedrijven"
 
 class Melding(models.Model):
     cbpid = models.IntegerField()
@@ -43,6 +45,8 @@ class Melding(models.Model):
     def link(self):
         return u'<a href=%s>link</a>' % (self.url)
     link.allow_tags = True
+Melding.verbose_name = "Melding"
+Melding.verbose_name_plural = "Meldingen"
 
 class Betrokkene(models.Model):
 	melding = models.ForeignKey(Melding)
@@ -50,6 +54,8 @@ class Betrokkene(models.Model):
 
 	def __unicode__(self):
 		return self.naam
+Betrokkene.verbose_name = "Betrokkene"
+Betrokkene.verbose_name_plural = "Betrokkenen"
 
 class BetrokkeneDetails(models.Model):
 	naam = models.CharField(max_length=255)
@@ -58,6 +64,8 @@ class BetrokkeneDetails(models.Model):
 
 	def __unicode__(self):
 		return self.naam
+BetrokkeneDetails.verbose_name = "Betrokkene Details"
+BetrokkeneDetails.verbose_name_plural = "Betrokkene Details"
 
 class Ontvanger(models.Model):
 	melding = models.ForeignKey(Melding)
@@ -65,6 +73,8 @@ class Ontvanger(models.Model):
 
 	def __unicode__(self):
 		return self.naam
+Ontvanger.verbose_name = "Ontvanger"
+Ontvanger.verbose_name_plural = "Ontvangers"
 
 class Verantwoordelijke(models.Model):
 	melding = models.ForeignKey(Melding)
@@ -73,6 +83,8 @@ class Verantwoordelijke(models.Model):
 	
 	def __unicode__(self):
 		return self.naam
+Verantwoordelijke.verbose_name = "Verantwoordelijke"
+Verantwoordelijke.verbose_name_plural = "Verantwoordelijken"
 
 class Doel(models.Model):
 	melding = models.ForeignKey(Melding)
@@ -80,6 +92,7 @@ class Doel(models.Model):
 	
 	def __unicode__(self):
 		return self.naam
-
+Doel.verbose_name = "Doel"
+Doel.verbose_name_plural = "Doelen"
 
 
